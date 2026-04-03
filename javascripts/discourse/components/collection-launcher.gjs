@@ -43,20 +43,37 @@ export default class CollectionLauncher extends Component {
     return !this.isHidden && this.showOnThisDevice && this.state.isReady;
   }
 
+  truncateLabel(value) {
+    const max = settings.max_side_label_chars || 22;
+    if (!value || value.length <= max) {
+      return value || "";
+    }
+
+    return `${value.slice(0, max - 1).trimEnd()}…`;
+  }
+
   get centerLabel() {
-    return this.state.currentTitle || this.launcherLabel;
+    if (settings.show_center_current_title && this.state.currentTitle) {
+      return this.state.currentTitle;
+    }
+
+    return this.launcherLabel;
   }
 
   get leftLabel() {
-    return this.state.canGoPrev ? this.state.previousTitle : "";
+    return this.state.canGoPrev
+      ? this.truncateLabel(this.state.previousTitle)
+      : "";
   }
 
   get rightLabel() {
-    return this.state.canGoNext ? this.state.nextTitle : "";
+    return this.state.canGoNext
+      ? this.truncateLabel(this.state.nextTitle)
+      : "";
   }
 
   get pagerText() {
-    if (!this.state.totalItems) {
+    if (!settings.show_pager_text || !this.state.totalItems) {
       return "";
     }
 
@@ -67,35 +84,43 @@ export default class CollectionLauncher extends Component {
     return this.state.isExpanded;
   }
 
-  @action
-  toggleInlineSlider() {
-    this.state.toggleExpanded();
+  syncExpandedClass() {
     document.body.classList.toggle(
       "collections-launcher-expanded",
       this.state.isExpanded
     );
   }
 
-  collapseSlider() {
+  collapseSliderIfNeeded() {
+    if (!settings.collapse_after_navigation) {
+      return;
+    }
+
     this.state.setExpanded(false);
-    document.body.classList.remove("collections-launcher-expanded");
+    this.syncExpandedClass();
+  }
+
+  @action
+  toggleInlineSlider() {
+    this.state.toggleExpanded();
+    this.syncExpandedClass();
   }
 
   @action
   openNavigatorModal() {
-    this.collapseSlider();
+    this.collapseSliderIfNeeded();
     this.state.openModal?.();
   }
 
   @action
   goPrev() {
-    this.collapseSlider();
+    this.collapseSliderIfNeeded();
     this.state.goPrev?.();
   }
 
   @action
   goNext() {
-    this.collapseSlider();
+    this.collapseSliderIfNeeded();
     this.state.goNext?.();
   }
 
@@ -105,6 +130,7 @@ export default class CollectionLauncher extends Component {
         class="collection-launcher-root"
         data-mode={{if this.isSliderMode "slider" "button"}}
         data-placement={{settings.launcher_placement}}
+        data-sticky-mobile-only={{if settings.sticky_mobile_only "true" "false"}}
       >
         {{#if this.isSliderMode}}
           <div
@@ -116,9 +142,10 @@ export default class CollectionLauncher extends Component {
                 {{#if this.state.canGoPrev}}
                   <DButton
                     @action={{this.goPrev}}
+                    @icon="chevron-left"
                     @translatedLabel={{this.leftLabel}}
                     class="collection-inline-nav collection-inline-nav-prev btn-flat"
-                    title={{this.leftLabel}}
+                    title={{this.state.previousTitle}}
                   />
                 {{/if}}
               </div>
@@ -134,9 +161,12 @@ export default class CollectionLauncher extends Component {
                   <span class="collection-inline-slider-title">
                     {{this.centerLabel}}
                   </span>
-                  <span class="collection-inline-slider-meta">
-                    {{this.pagerText}}
-                  </span>
+
+                  {{#if this.pagerText}}
+                    <span class="collection-inline-slider-meta">
+                      {{this.pagerText}}
+                    </span>
+                  {{/if}}
                 </button>
               </div>
 
@@ -145,8 +175,9 @@ export default class CollectionLauncher extends Component {
                   <DButton
                     @action={{this.goNext}}
                     @translatedLabel={{this.rightLabel}}
+                    @icon="chevron-right"
                     class="collection-inline-nav collection-inline-nav-next btn-flat"
-                    title={{this.rightLabel}}
+                    title={{this.state.nextTitle}}
                   />
                 {{/if}}
               </div>
@@ -155,8 +186,8 @@ export default class CollectionLauncher extends Component {
             {{#if settings.show_modal_action}}
               <DButton
                 @action={{this.openNavigatorModal}}
-                @translatedLabel="Open"
-                class="collection-inline-slider-modal-trigger"
+                @icon={{settings.modal_action_icon}}
+                class="collection-inline-slider-modal-trigger btn-flat"
                 title="Open collection navigator"
               />
             {{/if}}
@@ -164,8 +195,10 @@ export default class CollectionLauncher extends Component {
         {{else}}
           <DButton
             @action={{this.openNavigatorModal}}
-            @translatedLabel={{concat this.launcherLabel ": " this.centerLabel}}
+            @icon="bars"
+            @translatedLabel={{this.centerLabel}}
             class="collection-launcher-button"
+            title="Open collection navigator"
           />
         {{/if}}
       </div>
