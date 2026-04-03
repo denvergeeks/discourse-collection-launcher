@@ -1,1 +1,117 @@
-// Theme's SCSS
+.collection-launcher-root {
+  display: flex;
+  justify-content: center;
+  margin: 0.75rem 0 1rem;
+  pointer-events: auto;
+
+  &[data-placement="mobile-sticky-bottom"] {
+    @media (max-width: 767px) {
+      position: fixed;
+      left: 50%;
+      bottom: 4.75rem;
+      transform: translateX(-50%);
+      z-index: 1200;
+      margin: 0;
+    }
+  }
+}
+
+.collection-launcher-button,
+.collection-inline-slider-toggle,
+.collection-inline-slider-modal-trigger {
+  border: 1px solid var(--primary-low-mid, rgba(0, 0, 0, 0.15));
+  background: var(--secondary, #fff);
+  color: var(--primary, #222);
+  border-radius: 999px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.collection-launcher-button {
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+}
+
+.collection-inline-slider-shell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.collection-inline-slider-toggle {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 220px;
+  padding: 0.7rem 1rem;
+}
+
+.collection-inline-slider-center {
+  position: relative;
+  z-index: 2;
+  font-weight: 600;
+}
+
+.collection-inline-slider-side {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
+  font-size: 0.85rem;
+  color: var(--primary-medium, #666);
+  white-space: nowrap;
+}
+
+.collection-inline-slider-side-left {
+  left: 1rem;
+  transform: translate(-0.75rem, -50%);
+}
+
+.collection-inline-slider-side-right {
+  right: 1rem;
+  transform: translate(0.75rem, -50%);
+}
+
+.collections-launcher-expanded .collection-inline-slider-side-left {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+.collections-launcher-expanded .collection-inline-slider-side-right {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+.collections-launcher-expanded .collection-inline-slider-toggle {
+  min-width: 320px;
+}
+
+.collection-inline-slider-modal-trigger {
+  padding: 0.7rem 0.9rem;
+  font-weight: 600;
+}
+
+.collection-launcher-button:hover,
+.collection-inline-slider-toggle:hover,
+.collection-inline-slider-modal-trigger:hover {
+  transform: translateY(-1px);
+}
+
+@media (max-width: 767px) {
+  .collection-inline-slider-toggle {
+    min-width: 190px;
+    max-width: calc(100vw - 2rem);
+  }
+
+  .collections-launcher-expanded .collection-inline-slider-toggle {
+    min-width: min(320px, calc(100vw - 2rem));
+  }
+}
