@@ -1,2 +1,31 @@
-example_setting:
+launcher_mode:
+  type: enum
+  default: button
+  choices:
+    - hidden
+    - button
+    - slider
+
+launcher_placement:
+  type: enum
+  default: topic-above-posts
+  choices:
+    - topic-title
+    - topic-above-posts
+    - mobile-sticky-bottom
+
+launcher_label:
+  type: string
+  default: Browse Collection
+
+show_modal_action:
+  type: bool
+  default: true
+
+enable_mobile_launcher:
+  type: bool
+  default: true
+
+enable_desktop_launcher:
+  type: bool
   default: true
