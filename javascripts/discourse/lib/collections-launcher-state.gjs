@@ -2,6 +2,7 @@ import { tracked } from "@glimmer/tracking";
 
 class CollectionsLauncherState {
   @tracked isReady = false;
+  @tracked isExpanded = false;
   @tracked collectionName = "";
   @tracked currentTitle = "";
   @tracked previousTitle = "";
@@ -17,6 +18,7 @@ class CollectionsLauncherState {
 
   reset() {
     this.isReady = false;
+    this.isExpanded = false;
     this.collectionName = "";
     this.currentTitle = "";
     this.previousTitle = "";
@@ -28,6 +30,14 @@ class CollectionsLauncherState {
     this.openModal = null;
     this.goPrev = null;
     this.goNext = null;
+  }
+
+  setExpanded(value) {
+    this.isExpanded = !!value;
+  }
+
+  toggleExpanded() {
+    this.isExpanded = !this.isExpanded;
   }
 
   update({
