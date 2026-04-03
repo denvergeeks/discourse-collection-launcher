@@ -10,8 +10,7 @@ export default apiInitializer("1.24.0", (api) => {
     "mobile-sticky-bottom": "topic-above-posts",
   };
 
-  api.renderInOutlet(
-    outletMap[placement] || "topic-above-posts",
-    CollectionLauncher
-  );
+  const targetOutlet = outletMap[placement] || "topic-above-posts";
+
+  api.renderInOutlet(targetOutlet, CollectionLauncher);
 });
