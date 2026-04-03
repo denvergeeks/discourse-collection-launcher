@@ -11,10 +11,9 @@ class CollectionsLauncherState {
   @tracked totalItems = 0;
   @tracked canGoPrev = false;
   @tracked canGoNext = false;
-
-  openModal = null;
-  goPrev = null;
-  goNext = null;
+  @tracked openModal = null;
+  @tracked goPrev = null;
+  @tracked goNext = null;
 
   reset() {
     this.isReady = false;
