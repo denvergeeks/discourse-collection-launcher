@@ -64,26 +64,38 @@ export default class CollectionLauncher extends Component {
   }
 
   get expanded() {
-    return document.body.classList.contains("collections-launcher-expanded");
+    return this.state.isExpanded;
   }
 
   @action
   toggleInlineSlider() {
-    document.body.classList.toggle("collections-launcher-expanded");
+    this.state.toggleExpanded();
+    document.body.classList.toggle(
+      "collections-launcher-expanded",
+      this.state.isExpanded
+    );
+  }
+
+  collapseSlider() {
+    this.state.setExpanded(false);
+    document.body.classList.remove("collections-launcher-expanded");
   }
 
   @action
   openNavigatorModal() {
+    this.collapseSlider();
     this.state.openModal?.();
   }
 
   @action
   goPrev() {
+    this.collapseSlider();
     this.state.goPrev?.();
   }
 
   @action
   goNext() {
+    this.collapseSlider();
     this.state.goNext?.();
   }
 
