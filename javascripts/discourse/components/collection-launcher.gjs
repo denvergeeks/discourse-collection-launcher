@@ -45,6 +45,7 @@ export default class CollectionLauncher extends Component {
 
   truncateLabel(value) {
     const max = settings.max_side_label_chars || 22;
+
     if (!value || value.length <= max) {
       return value || "";
     }
@@ -137,8 +138,13 @@ export default class CollectionLauncher extends Component {
             class="collection-inline-slider-shell"
             data-expanded={{if this.expanded "true" "false"}}
           >
-            <div class="collection-inline-slider-track" aria-label="Collection navigation">
-              <div class="collection-inline-slider-side collection-inline-slider-side-left">
+            <div
+              class="collection-inline-slider-track"
+              aria-label="Collection navigation"
+            >
+              <div
+                class="collection-inline-slider-side collection-inline-slider-side-left"
+              >
                 {{#if this.state.canGoPrev}}
                   <DButton
                     @action={{this.goPrev}}
@@ -156,6 +162,7 @@ export default class CollectionLauncher extends Component {
                   class="collection-inline-slider-toggle"
                   aria-expanded={{if this.expanded "true" "false"}}
                   aria-label="Toggle collection quick navigator"
+                  title="Toggle collection quick navigator"
                   {{on "click" this.toggleInlineSlider}}
                 >
                   <span class="collection-inline-slider-title">
@@ -170,7 +177,9 @@ export default class CollectionLauncher extends Component {
                 </button>
               </div>
 
-              <div class="collection-inline-slider-side collection-inline-slider-side-right">
+              <div
+                class="collection-inline-slider-side collection-inline-slider-side-right"
+              >
                 {{#if this.state.canGoNext}}
                   <DButton
                     @action={{this.goNext}}
