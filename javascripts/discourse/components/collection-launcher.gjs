@@ -1,6 +1,7 @@
 import Component from "@glimmer/component";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
+import DButton from "discourse/components/d-button";
 import launcherState from "../lib/collections-launcher-state";
 
 export default class CollectionLauncher extends Component {
@@ -62,6 +63,10 @@ export default class CollectionLauncher extends Component {
     return `${this.state.currentIndex + 1}/${this.state.totalItems}`;
   }
 
+  get expanded() {
+    return document.body.classList.contains("collections-launcher-expanded");
+  }
+
   @action
   toggleInlineSlider() {
     document.body.classList.toggle("collections-launcher-expanded");
@@ -73,14 +78,12 @@ export default class CollectionLauncher extends Component {
   }
 
   @action
-  goPrev(event) {
-    event?.stopPropagation?.();
+  goPrev() {
     this.state.goPrev?.();
   }
 
   @action
-  goNext(event) {
-    event?.stopPropagation?.();
+  goNext() {
     this.state.goNext?.();
   }
 
@@ -92,69 +95,66 @@ export default class CollectionLauncher extends Component {
         data-placement={{settings.launcher_placement}}
       >
         {{#if this.isSliderMode}}
-          <div class="collection-inline-slider-shell">
-            <button
-              type="button"
-              class="collection-inline-slider-toggle"
-              {{on "click" this.toggleInlineSlider}}
-            >
-              <span
-                class="collection-inline-slider-side collection-inline-slider-side-left"
-              >
+          <div
+            class="collection-inline-slider-shell"
+            data-expanded={{if this.expanded "true" "false"}}
+          >
+            <div class="collection-inline-slider-track" aria-label="Collection navigation">
+              <div class="collection-inline-slider-side collection-inline-slider-side-left">
                 {{#if this.state.canGoPrev}}
-                  <button
-                    type="button"
-                    class="collection-inline-nav collection-inline-nav-prev"
-                    {{on "click" this.goPrev}}
-                  >
-                    {{this.leftLabel}}
-                  </button>
+                  <DButton
+                    @action={{this.goPrev}}
+                    @translatedLabel={{this.leftLabel}}
+                    class="collection-inline-nav collection-inline-nav-prev btn-flat"
+                    title={{this.leftLabel}}
+                  />
                 {{/if}}
-              </span>
+              </div>
 
-              <span class="collection-inline-slider-center">
-                <span class="collection-inline-slider-title">
-                  {{this.centerLabel}}
-                </span>
-                <span class="collection-inline-slider-meta">
-                  {{this.pagerText}}
-                </span>
-              </span>
+              <div class="collection-inline-slider-center">
+                <button
+                  type="button"
+                  class="collection-inline-slider-toggle"
+                  aria-expanded={{if this.expanded "true" "false"}}
+                  aria-label="Toggle collection quick navigator"
+                  {{on "click" this.toggleInlineSlider}}
+                >
+                  <span class="collection-inline-slider-title">
+                    {{this.centerLabel}}
+                  </span>
+                  <span class="collection-inline-slider-meta">
+                    {{this.pagerText}}
+                  </span>
+                </button>
+              </div>
 
-              <span
-                class="collection-inline-slider-side collection-inline-slider-side-right"
-              >
+              <div class="collection-inline-slider-side collection-inline-slider-side-right">
                 {{#if this.state.canGoNext}}
-                  <button
-                    type="button"
-                    class="collection-inline-nav collection-inline-nav-next"
-                    {{on "click" this.goNext}}
-                  >
-                    {{this.rightLabel}}
-                  </button>
+                  <DButton
+                    @action={{this.goNext}}
+                    @translatedLabel={{this.rightLabel}}
+                    class="collection-inline-nav collection-inline-nav-next btn-flat"
+                    title={{this.rightLabel}}
+                  />
                 {{/if}}
-              </span>
-            </button>
+              </div>
+            </div>
 
             {{#if settings.show_modal_action}}
-              <button
-                type="button"
+              <DButton
+                @action={{this.openNavigatorModal}}
+                @translatedLabel="Open"
                 class="collection-inline-slider-modal-trigger"
                 title="Open collection navigator"
-                {{on "click" this.openNavigatorModal}}
-              >
-                Open
-              </button>
+              />
             {{/if}}
           </div>
         {{else}}
-          <button
-            type="button"
+          <DButton
+            @action={{this.openNavigatorModal}}
+            @translatedLabel={{concat this.launcherLabel ": " this.centerLabel}}
             class="collection-launcher-button"
-            {{on "click" this.openNavigatorModal}}
-          >
-            {{this.launcherLabel}}: {{this.centerLabel}}
-          </button>
+          />
         {{/if}}
       </div>
     {{/if}}
