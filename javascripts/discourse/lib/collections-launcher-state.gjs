@@ -18,7 +18,7 @@ class CollectionsLauncherState {
 
   reset() {
     this.isReady = false;
-    this.isExpanded = false;
+    this.isExpanded = !!settings.slider_starts_expanded;
     this.collectionName = "";
     this.currentTitle = "";
     this.previousTitle = "";
@@ -69,5 +69,6 @@ class CollectionsLauncherState {
 }
 
 const state = new CollectionsLauncherState();
+state.reset();
 
 export default state;
